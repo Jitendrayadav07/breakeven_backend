@@ -10,32 +10,18 @@ const sequelize = require("../config/db");
 
 const signUp = async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const { email, password } = req.body;
 
-    let user_data = await User.findOne({
-      where: {
-        [Op.or]: [{ email: email }, { phone: phone }],
-      },
-    });
+    let user_data = await User.findOne({ where: { email: email } });
 
     if (user_data) {
-      if (user_data.email == req.body.email)
-        return res
-          .status(400)
-          .send(Response.sendResponse(false, null, APPROVE_STATUS.EMAIL_ALREADY_EXIT, 400));
-      else if (user_data.phone == req.body.phone) {
-        return res
-          .status(400)
-          .send(Response.sendResponse(false, null, APPROVE_STATUS.PHONE_ALREADY_EXIT, 400));
-      }
+      return res.status(400).send(Response.sendResponse(false, null, APPROVE_STATUS.EMAIL_ALREADY_EXIT, 400));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user record in the database
     const user = await User.create({
-      name,
       email,
-      phone,
       password: hashedPassword,
     });
 
@@ -53,7 +39,6 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   try {
     let user_data = await User.findOne({ where: { email: req.body.email } });
-    console.log("user_data",user_data)
     if (!user_data)
       return res
         .status(404)
@@ -76,7 +61,7 @@ const login = async (req, res) => {
     delete user_data.dataValues.password;
     // JWT Token creation
     const token = jwt.sign(
-      { email: user_data.email, phone: user_data.phone },
+      { email: user_data.email },
       JWT_SECRET,
       { expiresIn: "24h" }
     );
