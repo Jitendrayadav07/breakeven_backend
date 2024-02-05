@@ -8,9 +8,10 @@ const Response = require("../classes/Response");
 const { JWT_SECRET } = require("../config/jwtTokenKey");
 const sequelize = require("../config/db");
 
+//New User Register
 const signUp = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {name , email, contact_number , password } = req.body;
 
     let user_data = await User.findOne({ where: { email: email } });
 
@@ -21,13 +22,15 @@ const signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user record in the database
     const user = await User.create({
+      name,
+      contact_number,
       email,
       password: hashedPassword,
     });
 
     const emailData = { name: user.name };
 
-    await sendEmail(user.email, "Welcome to Our Break Even App", "set-password", emailData);
+    await sendEmail(user.email, "Welcome to Our Break Even App", "user-signup", emailData);
 
     res.status(201).send(Response.sendResponse(true, APPROVE_STATUS.USER_CREATED, null, 201));
   } catch (err) {
@@ -36,6 +39,7 @@ const signUp = async (req, res) => {
   }
 };
 
+//User Login 
 const login = async (req, res) => {
   try {
     let user_data = await User.findOne({ where: { email: req.body.email } });
@@ -68,7 +72,7 @@ const login = async (req, res) => {
 
     user_data.dataValues["token"] = token;
 
-    res.status(200).send(Response.sendResponse(true, user_data, null, 200));
+    res.status(200).send(Response.sendResponse(true, user_data,APPROVE_STATUS.LOGIN_SUCCESSFUL, 200));
   } catch (err) {
     console.error("Error logging in:", err);
     res.status(500).send("An error occurred while logging in.");
