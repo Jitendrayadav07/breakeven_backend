@@ -3,7 +3,8 @@ const APPROVE_STATUS = {
     PHONE_ALREADY_EXIT: "Phone Already Exist",
     EMAIL_AND_PASSWORD_INVALID : "Email or Password Invalid",
     USER_CREATED :"User Successfully Created",
-    INVALID_CREDENTIALS : "Email or Password Invalid"
+    INVALID_CREDENTIALS : "Email or Password Invalid",
+    LOGIN_SUCCESSFUL : "Login Successful"
   };
   
 module.exports = APPROVE_STATUS;
