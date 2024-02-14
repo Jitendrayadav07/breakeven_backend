@@ -26,7 +26,7 @@ app.use(cors());
 // Use routes
 app.use("/v1", routes);
 
-const PORT = 3000
+const PORT = 5000
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is listening on http://localhost:${PORT}`);

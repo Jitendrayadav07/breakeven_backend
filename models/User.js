@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
 const User = sequelize.define(
-  "User",
+  "Users",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,7 +12,7 @@ const User = sequelize.define(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     contact_number: {
       type: DataTypes.STRING,
@@ -29,6 +29,7 @@ const User = sequelize.define(
   },
   {
     underscored: true,
+    freezeTableName: true,
     timestamps: true,
   }
 );

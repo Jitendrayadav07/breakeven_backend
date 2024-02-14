@@ -1,21 +1,28 @@
 const jwt = require("jsonwebtoken");
-const Response = require("../classes/Response");
 const { JWT_SECRET } = require("../../config/jwtTokenKey");
+const Response = require("../../classes/Response");
+const { Op, QueryTypes } = require("sequelize");
+const sequelize = require("../../config/db")
 
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
+const verifyToken = async (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) 
+    return res.status(401).send(Response.sendResponse(false, null, 'A token is required for authentication',401));
   
-    if (!token) 
-      return res.status(401).send(Response.sendResponse(false, null, 'A token is required for authentication',401));
-    
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = decoded;
-    } catch (err) {
-      return res.status(401).send(Response.sendResponse(false, null, 'Invalid Token',401));
-    }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user_data = await sequelize.query(
+      `SELECT id,email FROM Users where email = '${decoded.email}'`,
+      { type: QueryTypes.SELECT }
+    );
+    req.user = user_data[0];
+    console.log("req.user",req.user)
+  } catch (err) {
+    return res.status(401).send(Response.sendResponse(false, null, 'Invalid Token',401));
+  }
 
-    return next();
+  return next();
 };
 
 module.exports = verifyToken;
