@@ -1,5 +1,4 @@
-const Currency = require("../models/Currency");
-const sequelize = require("../config/db")
+const db = require("../config/db.config")
 const Response = require("../classes/Response");
 const { Op, QueryTypes } = require("sequelize");
 

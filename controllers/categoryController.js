@@ -1,10 +1,9 @@
-const Category = require("../models/Category");
-const sequelize = require("../config/db")
+const db = require("../config/db.config")
 const Response = require("../classes/Response");
 
 const createCategory = async (req,res) =>{
     try{
-        let category = await Category.create(req.body)
+        let category = await db.category.create(req.body)
         res.status(201).send(Response.sendResponse(true, category, null, 201));
     }catch(err){
         // console.log("err",err)
@@ -14,7 +13,7 @@ const createCategory = async (req,res) =>{
 
 const getAllCategory = async (req,res) =>{
     try{
-        let categoryData = await Category.findAll({})
+        let categoryData = await db.category.findAll({})
        res.status(201).send(Response.sendResponse(true, categoryData, null, 201));
     }catch(err){
         console.log("err", err);
@@ -24,7 +23,7 @@ const getAllCategory = async (req,res) =>{
 
 const getCategoryById = async (req,res) =>{
     try{
-        let categoryData = await Category.findOne({where : {id : req.params.id}})
+        let categoryData = await db.category.findOne({where : {id : req.params.id}})
        res.status(201).send(Response.sendResponse(true, categoryData, null, 201));
     }catch(err){
         console.log("err", err);

@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const sendEmail = require("../utils/sendmail");
@@ -6,14 +5,14 @@ const { Op, QueryTypes } = require("sequelize");
 const APPROVE_STATUS = require("../constants/approve.constant");
 const Response = require("../classes/Response");
 const { JWT_SECRET } = require("../config/jwtTokenKey");
-const sequelize = require("../config/db");
+const db = require("../config/db.config");
 
 //New User Register
 const signUp = async (req, res) => {
   try {
     const {name , email, contact_number , password } = req.body;
 
-    let user_data = await User.findOne({ where: { email: email } });
+    let user_data = await db.user.findOne({ where: { email: email } });
 
     if (user_data) {
       return res.status(400).send(Response.sendResponse(false, null, APPROVE_STATUS.EMAIL_ALREADY_EXIT, 400));
@@ -21,7 +20,7 @@ const signUp = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user record in the database
-    const user = await User.create({
+    const user = await db.user.create({
       name,
       contact_number,
       email,
@@ -42,7 +41,7 @@ const signUp = async (req, res) => {
 //User Login 
 const login = async (req, res) => {
   try {
-    let user_data = await User.findOne({ where: { email: req.body.email } });
+    let user_data = await db.user.findOne({ where: { email: req.body.email } });
     if (!user_data)
       return res
         .status(404)

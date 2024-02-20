@@ -1,8 +1,8 @@
-// models/Group.js
+// models/AddGroupMember.js
 
 module.exports = (sequelize, DataTypes) => {
-  const Group = sequelize.define(
-      "groups",
+  const AddGroupMember = sequelize.define(
+      "group_members",
       {
         id: {
           type: DataTypes.INTEGER,
@@ -11,18 +11,21 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
           type: DataTypes.STRING,
-          allowNull: false,
+          allowNull: true,
         },
-        createdby: {
-          type: DataTypes.INTEGER,
-        },
-        type_id: {
-          type: DataTypes.INTEGER,
-        },
-        avatar: {
+        contact_number: {
           type: DataTypes.STRING,
           allowNull: true,
-        }
+        },
+        email: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true,
+        },
+        group_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
       },
       {
         underscored: true,
@@ -30,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: true,
       }
     );
-    return Group;
+    return AddGroupMember;
 }
-    
     

@@ -15,6 +15,11 @@ userAuth,
 // JoiMiddleWare(groupSchema.addGroupMemberSchema, 'body'),
 groupController.addGroupMember);
 
+router.post("/access-contact", 
+userAuth,
+// JoiMiddleWare(groupSchema.addGroupMemberSchema, 'body'),
+groupController.accessContactApi);
+
 router.get("/get-all-groups", 
 userAuth,
 groupController.getAllGroupMember);
@@ -23,6 +28,15 @@ router.get("/:id",
 userAuth,
 JoiMiddleWare(groupSchema.getGroupMemberByIDSchema, 'params'),
 groupController.getGroupMemberById);
+
+router.put('/update',
+userAuth,
+groupController.updateGroup)
+
+router.delete('/delete/:id',
+userAuth,
+JoiMiddleWare(groupSchema.deleteGroup, 'params'),
+groupController.deleteGroup)
 
 
 module.exports = router;
