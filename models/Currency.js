@@ -1,7 +1,7 @@
 // models/Currency.js
 module.exports = (sequelize, DataTypes) => {
     const Currency = sequelize.define(
-        "currencies",
+        "currency",
         {
             id: {
                 type: DataTypes.INTEGER,

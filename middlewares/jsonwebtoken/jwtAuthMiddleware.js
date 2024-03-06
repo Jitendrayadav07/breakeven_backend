@@ -13,11 +13,11 @@ const verifyToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user_data = await db.sequelize.query(
-      `SELECT id,email FROM users where email = '${decoded.email}'`,
+      `SELECT id,phone_number FROM users where phone_number = '${decoded.phone_number}'`,
       { type: QueryTypes.SELECT }
     );
+    console.log("user_data",user_data)
     req.user = user_data[0];
-    console.log("req.user",req.user)
   } catch (err) {
     return res.status(401).send(Response.sendResponse(false, null, 'Invalid Token',401));
   }

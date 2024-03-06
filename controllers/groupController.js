@@ -6,13 +6,6 @@ const createGroup = async (req, res) => {
     try {
         let { name , type_id} = req.body;
         let createdBy = req.user.id;
-
-        // const groupType = await db.group_type.findOne({ where: { group_type: { [Op.eq]: req.body.type_id } } })
-
-        // if (!groupType) return res.status(400).send(Response.sendResponse(true, null, "No Group Type Present", 400));
-
-        // req.body.type_id = groupType.id
-
         let group = await db.group.create({
             name: name,
             createdby: createdBy,
@@ -27,47 +20,58 @@ const createGroup = async (req, res) => {
 
 const accessContactApi = async (req, res) => {
     try {
-        const groupData = req.body.members;
-        const addUser = [];
-        for (let i = 0; i < groupData.length; i++) {
-            const user = groupData[i];
-            const existingUser = await db.access_contact.findOne({ where: { contact_number: user.contact_number } });
-
-            if (!existingUser) {
-                const newUser = await db.access_contact.create({ name: user.name, contact_number: user.contact_number });
+        let groupData = req.body.members;
+        let addUser = [];
+        groupData.forEach(async(element) => {
+            let user = element
+                let newUser = await db.access_contact.create({ name: user.name, phone_number: user.phone_number });
                 addUser.push(newUser);
-            } else {
+        });
 
-            }
-        }
         res.status(201).send(Response.sendResponse(true, groupData, null, 201));
     } catch (err) {
-        // console.log("err", err);
+        console.log("err", err);
         return res.status(500).send(Response.sendResponse(false, null, err, 500));
     }
 }
 
 const addGroupMember = async (req, res) => {
     try {
-        const groupId = req.body.group_id;
-        const groupMemberData = req.body.members;
-        const addUser = [];
+        let groupId = req.body.group_id;
+        let groupMemberData = req.body.members;
+        let addUser = [];
 
-        for (let i = 0; i < groupMemberData.length; i++) {
+        for(let i = 0 ; i < groupMemberData.length ; i++){
             const user = groupMemberData[i];
-            const existingUser = await db.group_member.findOne({ where: { contact_number: user.contact_number } });
+            const userPresent = await db.user.findOne({ where: { 
+                phone_number: user.phone_number
+            }  });
 
-            if (!existingUser) {
-                const newUser = await db.group_member.create({ name: user.name, contact_number: user.contact_number, email: user.email, group_id: groupId });
+            if(userPresent){
+                // Present 
+                const userId = userPresent.id;
+                const userIdExit = await db.group_user_mapping.findOne({ where: { 
+                    group_id: groupId,
+                    user_id: userId
+                } });
+
+                if(!userIdExit) {
+                    await db.group_user_mapping.create({
+                        group_id : groupId,
+                        user_id : userId
+                    });
+                }
+            }else{
+                // Not Present 
+                const newUser = await db.user.create({ name: user.name, phone_number: user.phone_number, group_id: groupId });
+                await db.group_user_mapping.create({
+                    group_id : groupId,
+                    user_id : newUser.id
+                })
                 addUser.push(newUser);
-                //Send message to user to download link application link
-            } else {
-                //Send message to user meadded (added to Group)
             }
         }
-
-        res.status(201).send(Response.sendResponse(true, addUser, "Members added to group successfully", 201));
-
+        res.status(201).send(Response.sendResponse(true, addUser, null, 201));
     } catch (err) {
         // console.log("err", err);
         return res.status(500).send(Response.sendResponse(false, null, err, 500));
@@ -86,7 +90,24 @@ const getAllGroupMember = async (req, res) => {
 
 const getGroupMemberById = async (req, res) => {
     try {
-        let groupData = await db.group.findOne({ where: { id: req.params.id } })
+        let groupData = await db.group.findOne(
+            { 
+                where: { id: req.params.id } ,
+                attributes:["id","name"],
+                include : [
+                    {
+                        model : db.group_user_mapping,
+                        attributes : ["user_id"],
+                        include: [
+                            {
+                                model: db.user,
+                                attributes: ["name", "phone_number"]
+                            }
+                        ]
+                    },
+                ]
+            }
+        )
         res.status(201).send(Response.sendResponse(true, groupData, null, 201));
     } catch (err) {
         // console.log("err", err);
@@ -116,10 +137,10 @@ const deleteGroup = async (req, res) => {
 
 module.exports = {
     createGroup,
-    addGroupMember,
+    accessContactApi,
     getGroupMemberById,
     getAllGroupMember,
     updateGroup,
     deleteGroup,
-    accessContactApi
+    addGroupMember
 }

@@ -1,31 +1,22 @@
-// models/User.js
+// models/GroupUserMapping.js
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define(
-    "users",
+    const GroupUserMapping = sequelize.define(
+    "group_user_mappings",
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      phone_number: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      is_registered: {
+      group_id: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
         allowNull: true,
-      }
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
     },
     {
       underscored: true,
@@ -33,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
-  return User;
+  return GroupUserMapping;
 }
-  
   

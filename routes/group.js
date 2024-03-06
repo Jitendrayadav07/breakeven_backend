@@ -10,15 +10,15 @@ userAuth,
 JoiMiddleWare(groupSchema.createGroup,'body'),
 groupController.createGroup);
 
-router.post("/group-id", 
-userAuth,
-// JoiMiddleWare(groupSchema.addGroupMemberSchema, 'body'),
-groupController.addGroupMember);
-
 router.post("/access-contact", 
 userAuth,
 // JoiMiddleWare(groupSchema.addGroupMemberSchema, 'body'),
 groupController.accessContactApi);
+
+router.post("/add-member", 
+userAuth,
+// JoiMiddleWare(groupSchema.addGroupMemberSchema, 'body'),
+groupController.addGroupMember);
 
 router.get("/get-all-groups", 
 userAuth,

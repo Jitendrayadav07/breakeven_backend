@@ -4,7 +4,8 @@ const APPROVE_STATUS = {
     EMAIL_AND_PASSWORD_INVALID : "Email or Password Invalid",
     USER_CREATED :"User Successfully Created",
     INVALID_CREDENTIALS : "Email or Password Invalid",
-    LOGIN_SUCCESSFUL : "Login Successful"
+    LOGIN_SUCCESSFUL : "Login Successful",
+    USER_EXIST : "User Exit"
   };
   
 module.exports = APPROVE_STATUS;
