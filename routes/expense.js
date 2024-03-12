@@ -10,5 +10,15 @@ userAuth,
 JoiMiddleWare(expenseSchema.createExpenseSchema,'body'),
 expenseController.createExpense);
 
+router.get("/get-user-expense",
+userAuth,
+JoiMiddleWare(expenseSchema.getUserExpense,'body'),
+expenseController.getUserExpenseData);
+
+
+router.get("/get-all-user-expense",
+// userAuth,
+expenseController.getUserExpenseMappingData);
+
 
 module.exports = router;

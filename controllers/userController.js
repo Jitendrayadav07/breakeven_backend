@@ -108,7 +108,7 @@ const verifyOtp = async (req, res) => {
       }
 
   } catch (err) {
-      return Response.sendResponse(false,null,err.message,status_codes.INTERNAL_SERVER_ERROR);
+     return res.status(500).send(Response.sendResponse(false, null, err, 500));
   }
 }
 

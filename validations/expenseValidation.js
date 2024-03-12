@@ -9,6 +9,10 @@ const expenseSchema = {
         expense_category_id : Joi.number(),
         date : Joi.any(),
       }),
+
+      getUserExpense:Joi.object().keys({
+        group_id : Joi.number().required(),
+      })
 };
 
 module.exports = expenseSchema;
